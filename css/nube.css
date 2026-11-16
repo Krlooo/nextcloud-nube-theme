@@ -594,6 +594,16 @@ body[data-themes] .files-list__header .upload-picker .button-vue--vue-primary * 
 	#content-vue:has(.files-navigation:not(.app-navigation--close)) .files-navigation .app-navigation__body {
 		margin-top: 80px;
 	}
+	/* The navigation (z-index 1800) sits above the content (1000), so the moved button would be
+	   visible but not clickable. Let clicks pass through the empty top of the navigation. */
+	#content-vue:has(.files-navigation:not(.app-navigation--close)) .files-navigation,
+	#content-vue:has(.files-navigation:not(.app-navigation--close)) .files-navigation #app-navigation-vue {
+		pointer-events: none;
+	}
+	#content-vue:has(.files-navigation:not(.app-navigation--close)) .files-navigation #app-navigation-vue > *,
+	#content-vue:has(.files-navigation:not(.app-navigation--close)) .files-navigation .app-navigation-toggle-wrapper {
+		pointer-events: auto;
+	}
 }
 
 @media (max-width: 1023px) {
@@ -1124,6 +1134,116 @@ body[data-themes*="dark"] .v-popper__popper .v-popper__inner {
 	margin: 0 16px 16px 16px !important;
 }
 
+/* 10b. App settings dialogs (for example Files settings) ------------------------------------------- */
+/* Nextcloud tints these dialogs with the primary color: blue navigation and blue rows. Cloud drive
+   settings use neutral surfaces, a selected pill in the navigation and outlined segmented buttons. */
+.app-settings {
+	--nav-tint: var(--nube-surface-2);
+	--color-primary-element-extra-light: var(--nube-surface-2);
+	--color-primary-element-extra-light-hover: color-mix(in srgb, var(--nube-surface-2) 92%, var(--nube-text) 8%);
+}
+.app-settings .modal-container {
+	background: var(--nube-surface-2) !important;
+}
+.app-settings .app-settings__navigation {
+	background: var(--nube-surface-2) !important;
+	padding: 16px 8px !important;
+}
+.app-settings .app-settings__content {
+	background: var(--nube-surface) !important;
+	border-radius: 16px 0 0 16px;
+}
+.app-settings .app-settings__navigation h2,
+.app-settings .dialog__name,
+.app-settings .app-settings__navigation .navigation-list__heading {
+	color: var(--nube-text) !important;
+	font-size: 22px !important;
+	font-weight: 400 !important;
+	padding-inline: 16px !important;
+}
+.app-settings .navigation-list__link {
+	border-radius: 20px !important;
+	min-height: 40px;
+	padding-inline: 16px !important;
+	color: var(--nube-text) !important;
+	background: transparent !important;
+	font-weight: 500;
+}
+.app-settings .navigation-list__link:hover {
+	background: var(--nube-hover) !important;
+}
+.app-settings .navigation-list__link--active,
+.app-settings .navigation-list__link--active:hover {
+	background: var(--nube-selected) !important;
+	color: var(--nube-on-selected) !important;
+}
+.app-settings .navigation-list__link:focus-visible {
+	outline: none !important;
+	box-shadow: inset 0 0 0 2px var(--nube-primary) !important;
+}
+.app-settings .navigation-list__link--active,
+.app-settings .navigation-list__link--active:focus,
+.app-settings .navigation-list__link--active:focus-visible {
+	outline: none !important;
+	box-shadow: none !important;
+}
+.app-settings .navigation-list__link::before,
+.app-settings .navigation-list__link--active::before {
+	display: none !important;
+}
+/* Sections: no focus frame when the navigation scrolls to them. */
+.app-settings .app-settings__content section:focus,
+.app-settings .app-settings__content section:focus-visible,
+.app-settings .app-settings-section:focus,
+.app-settings .app-settings-section:focus-visible,
+.app-settings .app-settings__content:focus-visible {
+	outline: none !important;
+	box-shadow: none !important;
+}
+/* Rows with a switch: neutral rounded rows. */
+.app-settings [class*="_formBoxItem_"] {
+	/* The component sets these variables on itself, so they must be set here, not on a parent. */
+	--color-primary-element-extra-light: var(--nube-surface-2) !important;
+	--color-primary-element-extra-light-hover: color-mix(in srgb, var(--nube-surface-2) 92%, var(--nube-text) 8%) !important;
+	color: var(--nube-text) !important;
+	border-radius: 12px !important;
+}
+/* Segmented buttons: outlined group, selected segment in the secondary container color.
+   Only the items (they also carry _ncFormBox__item_), not their inner parts. */
+.app-settings [class*="_ncFormBox_row_"]:has(> [class*="_radioGroupButton_"]) {
+	gap: 0 !important;
+	border: 1px solid var(--nube-outline);
+	border-radius: 20px;
+	overflow: hidden;
+}
+.app-settings [class*="_radioGroupButton_"][class*="_ncFormBox__item_"] {
+	background: transparent !important;
+	color: var(--nube-text) !important;
+	border-radius: 0 !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+.app-settings [class*="_radioGroupButton_"][class*="_ncFormBox__item_"] + [class*="_radioGroupButton_"][class*="_ncFormBox__item_"] {
+	border-inline-start: 1px solid var(--nube-outline) !important;
+}
+.app-settings [class*="_radioGroupButton_"][class*="_ncFormBox__item_"]:hover {
+	background: var(--nube-hover) !important;
+}
+.app-settings [class*="_radioGroupButton_active_"][class*="_ncFormBox__item_"],
+.app-settings [class*="_radioGroupButton_active_"][class*="_ncFormBox__item_"]:hover {
+	background: var(--nube-selected) !important;
+	color: var(--nube-on-selected) !important;
+}
+.app-settings [class*="_radioGroupButton_"][class*="_ncFormBox__item_"] * {
+	color: inherit !important;
+}
+.app-settings h3,
+.app-settings .app-settings-section__name {
+	font-size: 16px !important;
+	font-weight: 500 !important;
+	color: var(--nube-text) !important;
+}
+
 /* 11. Login and other guest pages ------------------------------------------------------------------ */
 body#body-login,
 body.guest,
@@ -1366,5 +1486,136 @@ body#body-login > footer {
 	#body-login footer.guest-box,
 	body#body-login > footer {
 		margin: 0 auto 16px !important;
+	}
+}
+
+/* 13. Motion (Material 3) ---------------------------------------------------------------------------- */
+/* Durations and easing curves from the Material 3 motion spec. Only CSS: no ripple from the tap point. */
+body {
+	--nube-ease: cubic-bezier(0.2, 0, 0, 1);              /* standard */
+	--nube-ease-in: cubic-bezier(0.05, 0.7, 0.1, 1);      /* emphasized decelerate: things entering */
+	--nube-ease-out: cubic-bezier(0.3, 0, 0.8, 0.15);     /* emphasized accelerate: things leaving */
+	--nube-fast: 100ms;
+	--nube-medium: 200ms;
+	--nube-slow: 300ms;
+}
+
+/* State layers: hover tint fades in, press darkens a bit more. */
+.button-vue,
+.app-navigation-entry,
+.app-navigation-entry .app-navigation-entry-link,
+.files-list__row,
+.action-button,
+.action-link,
+.action-router,
+.header-menu__trigger,
+.vue-crumb .button-vue,
+.input-field__input,
+textarea {
+	transition:
+		background-color var(--nube-medium) var(--nube-ease),
+		color var(--nube-medium) var(--nube-ease),
+		border-color var(--nube-medium) var(--nube-ease),
+		box-shadow var(--nube-medium) var(--nube-ease) !important;
+}
+.button-vue:active:not(:disabled),
+.app-navigation-entry:active,
+.action-button:active,
+.action-link:active,
+.files-list__row:active,
+.header-menu__trigger:active {
+	background-image: linear-gradient(var(--nube-hover), var(--nube-hover)) !important;
+	transition-duration: var(--nube-fast) !important;
+}
+/* The active navigation pill fades between entries. */
+.app-navigation-entry.active {
+	animation: nube-fade-in var(--nube-medium) var(--nube-ease);
+}
+/* Elevation grows on hover for the New button, as on the FAB. */
+.files-list__header .upload-picker .button-vue--vue-primary {
+	transition: box-shadow var(--nube-medium) var(--nube-ease), background-color var(--nube-medium) var(--nube-ease) !important;
+}
+/* The search field turns white and lifts when focused. */
+#header .unified-search-input {
+	transition: background-color var(--nube-medium) var(--nube-ease), box-shadow var(--nube-medium) var(--nube-ease) !important;
+}
+
+/* Menus and dropdowns grow from the button that opens them. */
+.v-popper__popper--shown .v-popper__inner {
+	animation: nube-menu-in var(--nube-medium) var(--nube-ease-in);
+	transform-origin: top center;
+}
+.v-popper__popper[data-popper-placement^="top"].v-popper__popper--shown .v-popper__inner {
+	transform-origin: bottom center;
+}
+.v-popper__popper[data-popper-placement$="start"].v-popper__popper--shown .v-popper__inner {
+	transform-origin: top left;
+}
+.v-popper__popper[data-popper-placement$="end"].v-popper__popper--shown .v-popper__inner {
+	transform-origin: top right;
+}
+/* Tooltips only fade. */
+.v-popper--theme-tooltip.v-popper__popper--shown .v-popper__inner {
+	animation: nube-fade-in var(--nube-fast) var(--nube-ease);
+}
+/* Header menus (account, notifications). */
+.header-menu__wrapper {
+	animation: nube-menu-in var(--nube-medium) var(--nube-ease-in);
+	transform-origin: top right;
+}
+
+/* Dialogs scale in from the center; the scrim fades. */
+.modal-mask {
+	animation: nube-fade-in var(--nube-medium) var(--nube-ease);
+}
+.modal-container {
+	animation: nube-dialog-in var(--nube-slow) var(--nube-ease-in);
+}
+.modal-wrapper--fullscreen .modal-container,
+.modal-wrapper--large .modal-container:has(.viewer__content) {
+	animation: nube-fade-in var(--nube-medium) var(--nube-ease);
+}
+
+/* Snackbars rise from the bottom edge. */
+.toastify.on {
+	animation: nube-snackbar-in var(--nube-medium) var(--nube-ease-in);
+}
+
+/* The navigation drawer slides in on small screens. */
+@media (max-width: 1023px) {
+	.app-navigation:not(.app-navigation--close) {
+		animation: nube-drawer-in var(--nube-slow) var(--nube-ease-in);
+	}
+}
+
+@keyframes nube-fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+@keyframes nube-menu-in {
+	from { opacity: 0; transform: scaleY(0.8); }
+	to { opacity: 1; transform: scaleY(1); }
+}
+@keyframes nube-dialog-in {
+	from { opacity: 0; transform: scale(0.92); }
+	to { opacity: 1; transform: scale(1); }
+}
+@keyframes nube-snackbar-in {
+	from { opacity: 0; transform: translateY(16px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+@keyframes nube-drawer-in {
+	from { transform: translateX(-24px); opacity: 0.6; }
+	to { transform: translateX(0); opacity: 1; }
+}
+
+/* Respect the system "reduce motion" setting. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
 	}
 }
