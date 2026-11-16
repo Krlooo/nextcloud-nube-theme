@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<id>nube_theme</id>
+	<name>Nube theme</name>
+	<summary>Clean light and dark look inspired by modern cloud drives</summary>
+	<description>Theme for cloud.krlo.dev. It only adds CSS: it overrides the Nextcloud design variables and styles the stable component classes. It does not replace templates or JavaScript. Disable the app to go back to the default look.</description>
+	<version>1.0.0</version>
+	<licence>agpl</licence>
+	<author>Hermes for Carlos</author>
+	<namespace>NubeTheme</namespace>
+	<category>customization</category>
+	<types>
+		<logging/>
+	</types>
+	<dependencies>
+		<!-- Tested on 35 only. On a new major version Nextcloud disables the app and the default look returns. -->
+		<nextcloud min-version="35" max-version="35"/>
+	</dependencies>
+</info>

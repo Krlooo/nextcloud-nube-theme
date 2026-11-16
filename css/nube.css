@@ -1,0 +1,1349 @@
+/*
+ * Nube theme for Nextcloud 35. Look inspired by modern cloud drives (Material 3).
+ *
+ * Rules that keep updates safe:
+ * 1. Most of the look comes from Nextcloud design variables (--color-*, --border-radius-*, --font-face...).
+ * 2. Selectors only use stable component classes (@nextcloud/vue: .button-vue, .app-navigation-entry,
+ *    .files-list__row, .input-field...). Never hashed classes like ._name_abc12.
+ * 3. No template, JavaScript or core file is touched. Disable the app and the default look returns.
+ *
+ * Layers: 1 tokens, 2 Nextcloud variables, 3 base, 4 header, 5 layout, 6 navigation, 7 files,
+ *         8 controls, 9 popovers and dialogs, 10 settings and other apps, 11 login and guest pages.
+ */
+
+/* 1. Tokens (light) ------------------------------------------------------------------------------- */
+body {
+	--nube-bg: #f8fafd;              /* page, header and navigation */
+	--nube-surface: #ffffff;         /* content card */
+	--nube-surface-2: #f0f4f9;       /* hover on cards, login page */
+	--nube-search: #e9eef6;
+	--nube-text: #1f1f1f;
+	--nube-text-2: #444746;
+	--nube-outline: #747775;
+	--nube-outline-2: #c4c7c5;
+	--nube-divider: #e3e3e3;
+	--nube-primary: #0b57d0;
+	--nube-on-primary: #ffffff;
+	--nube-primary-hover: #0a4fbd;
+	--nube-primary-container: #d3e3fd;
+	--nube-on-primary-container: #041e49;
+	--nube-selected: #c2e7ff;
+	--nube-on-selected: #001d35;
+	--nube-hover: rgba(31, 31, 31, 0.08);
+	--nube-pressed: rgba(31, 31, 31, 0.12);
+	--nube-folder: #444746;
+	--nube-snackbar: #303030;
+	--nube-on-snackbar: #f2f2f2;
+	--nube-elev-1: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+	--nube-elev-2: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 2px 6px 2px rgba(60, 64, 67, 0.15);
+	--nube-elev-3: 0 4px 8px 3px rgba(60, 64, 67, 0.15), 0 1px 3px rgba(60, 64, 67, 0.3);
+	--nube-font: 'Google Sans', 'Google Sans Text', Roboto, 'Segoe UI', Arial, sans-serif;
+}
+
+/* 1b. Tokens (dark): explicit dark theme, or "default" theme with a dark system setting. */
+body[data-themes*="dark"] {
+	--nube-bg: #1b1b1b;
+	--nube-surface: #131314;
+	--nube-surface-2: #1e1f20;
+	--nube-search: #282a2c;
+	--nube-text: #e3e3e3;
+	--nube-text-2: #c4c7c5;
+	--nube-outline: #8e918f;
+	--nube-outline-2: #444746;
+	--nube-divider: #2d2f31;
+	--nube-primary: #a8c7fa;
+	--nube-on-primary: #062e6f;
+	--nube-primary-hover: #b9d2fb;
+	--nube-primary-container: #0842a0;
+	--nube-on-primary-container: #d3e3fd;
+	--nube-selected: #004a77;
+	--nube-on-selected: #c2e7ff;
+	--nube-hover: rgba(227, 227, 227, 0.08);
+	--nube-pressed: rgba(227, 227, 227, 0.12);
+	--nube-folder: #c4c7c5;
+	--nube-snackbar: #e3e3e3;
+	--nube-on-snackbar: #303030;
+	--nube-elev-1: 0 1px 3px 1px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+	--nube-elev-2: 0 2px 6px 2px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+	--nube-elev-3: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+@media (prefers-color-scheme: dark) {
+	body[data-themes*="default"],
+	body[data-themes=""] {
+		--nube-bg: #1b1b1b;
+		--nube-surface: #131314;
+		--nube-surface-2: #1e1f20;
+		--nube-search: #282a2c;
+		--nube-text: #e3e3e3;
+		--nube-text-2: #c4c7c5;
+		--nube-outline: #8e918f;
+		--nube-outline-2: #444746;
+		--nube-divider: #2d2f31;
+		--nube-primary: #a8c7fa;
+		--nube-on-primary: #062e6f;
+		--nube-primary-hover: #b9d2fb;
+		--nube-primary-container: #0842a0;
+		--nube-on-primary-container: #d3e3fd;
+		--nube-selected: #004a77;
+		--nube-on-selected: #c2e7ff;
+		--nube-hover: rgba(227, 227, 227, 0.08);
+		--nube-pressed: rgba(227, 227, 227, 0.12);
+		--nube-folder: #c4c7c5;
+		--nube-snackbar: #e3e3e3;
+		--nube-on-snackbar: #303030;
+		--nube-elev-1: 0 1px 3px 1px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+		--nube-elev-2: 0 2px 6px 2px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+		--nube-elev-3: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+	}
+}
+
+/* 2. Nextcloud design variables mapped to the tokens ----------------------------------------------- */
+/* body[data-themes] (0,1,1) beats the theming app's [data-themes*=...] (0,1,0) whatever the load order. */
+body[data-themes] {
+	--font-face: var(--nube-font);
+	--default-font-size: 14px;
+	--font-size-small: 12px;
+	--font-weight-heading: 400;
+	--header-height: 64px;
+	--body-container-margin: 0px;
+	--body-container-radius: 0px;
+	--border-radius-element: 8px;
+	--border-radius-container: 12px;
+	--border-radius-container-large: 16px;
+	--border-radius-large: 16px;
+	--border-radius-rounded: 28px;
+
+	--color-main-background: var(--nube-surface);
+	--color-main-background-blur: var(--nube-surface);
+	--color-main-background-translucent: var(--nube-surface);
+	--color-main-text: var(--nube-text);
+	--color-text-light: var(--nube-text);
+	--color-text-maxcontrast: var(--nube-text-2);
+	--color-text-maxcontrast-default: var(--nube-text-2);
+	--color-text-maxcontrast-background-blur: var(--nube-text-2);
+	--color-text-lighter: var(--nube-text-2);
+
+	--color-background-plain: var(--nube-bg);
+	--color-background-plain-text: var(--nube-text);
+	--image-background: none;
+	--color-background-hover: var(--nube-hover);
+	--color-background-dark: var(--nube-pressed);
+	--color-background-darker: var(--nube-outline-2);
+
+	--color-border: var(--nube-divider);
+	--color-border-dark: var(--nube-outline-2);
+	--color-border-maxcontrast: var(--nube-outline);
+
+	--color-primary: var(--nube-primary);
+	--color-primary-text: var(--nube-on-primary);
+	--color-primary-hover: var(--nube-primary-hover);
+	--color-primary-element: var(--nube-primary);
+	--color-primary-element-text: var(--nube-on-primary);
+	--color-primary-element-hover: var(--nube-primary-hover);
+	--color-primary-light: var(--nube-primary-container);
+	--color-primary-light-text: var(--nube-on-primary-container);
+	--color-primary-light-hover: var(--nube-selected);
+	--color-primary-element-light: var(--nube-primary-container);
+	--color-primary-element-light-text: var(--nube-on-primary-container);
+	--color-primary-element-light-hover: var(--nube-selected);
+	--color-background-selection: var(--nube-selected);
+	--color-box-shadow-rgb: 60, 64, 67;
+	/* Header icons are white images inverted on bright backgrounds. */
+	--background-image-invert-if-bright: invert(100%);
+	--background-image-invert-if-dark: no;
+	--header-menu-icon-mask: none;
+}
+body[data-themes*="dark"] {
+	--background-image-invert-if-bright: no;
+	--background-image-invert-if-dark: invert(100%);
+}
+@media (prefers-color-scheme: dark) {
+	body[data-themes*="default"],
+	body[data-themes=""] {
+		--background-image-invert-if-bright: no;
+		--background-image-invert-if-dark: invert(100%);
+	}
+}
+
+/* 3. Base ------------------------------------------------------------------------------------------- */
+body[data-themes] {
+	font-family: var(--nube-font);
+	background-color: var(--nube-bg) !important;
+	background-image: none !important;
+	color: var(--nube-text);
+}
+body[data-themes] h1, body[data-themes] h2, body[data-themes] h3 {
+	font-weight: 400;
+}
+::selection {
+	background: var(--nube-selected);
+	color: var(--nube-on-selected);
+}
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--nube-outline-2) transparent;
+}
+
+/* 4. Header ----------------------------------------------------------------------------------------- */
+#header {
+	background: var(--nube-bg) !important;
+	box-shadow: none !important;
+	height: 64px;
+	padding-inline: 8px;
+}
+/* White header icons and logos are inverted when the background is bright. */
+body[data-themes] #header .header-end .header-menu__trigger,
+body[data-themes] #header .app-menu-icon,
+body[data-themes] #header .app-menu-entry__icon,
+body[data-themes] #header .header-menu .material-design-icon {
+	color: var(--nube-text-2);
+}
+#header #nextcloud {
+	padding-inline: 8px 4px;
+}
+#header .logo.logo-icon {
+	position: static !important;
+	flex: 0 0 40px;
+	width: 40px !important;
+	height: 40px !important;
+	background-size: contain !important;
+	background-position: center !important;
+	filter: none !important;
+}
+/* Product name next to the logo, as cloud drives do. */
+#header #nextcloud::after {
+	content: "Nube";
+	font: 400 22px/40px var(--nube-font);
+	color: var(--nube-text-2);
+	margin-inline-start: 8px;
+	white-space: nowrap;
+}
+#header #nextcloud {
+	display: flex;
+	align-items: center;
+	width: auto;
+}
+#header .header-start {
+	gap: 8px;
+}
+/* App menu: icons in the header colored like the text. */
+#header .app-menu-entry {
+	--app-menu-entry-growth: 0px;
+}
+#header .app-menu-entry__label {
+	color: var(--nube-text);
+	font-weight: 500;
+}
+#header .app-menu-entry--active .app-menu-entry__icon,
+#header .app-menu-entry--active::before {
+	color: var(--nube-text);
+}
+
+/* Header columns: logo and app menu on the left (as wide as the navigation), search, icons on the right. */
+#header .header-start {
+	flex: 0 0 auto !important;
+	min-width: 240px;
+}
+#header .header-center {
+	flex: 1 1 auto !important;
+	max-width: 720px;
+	justify-content: flex-start !important;
+	margin-inline-start: 16px;
+}
+#header .header-end {
+	flex: 1 0 auto !important;
+	justify-content: flex-end !important;
+}
+/* Unified search: the big rounded search field. */
+#header .unified-search-menu,
+#header .unified-search-input {
+	width: 100% !important;
+	max-width: 720px !important;
+}
+#header .unified-search-input {
+	height: 48px !important;
+	background: var(--nube-search) !important;
+	border: 0 !important;
+	border-radius: 28px !important;
+	box-shadow: none !important;
+	transition: background-color 0.15s, box-shadow 0.15s;
+}
+#header .unified-search-input:hover {
+	background: color-mix(in srgb, var(--nube-search) 96%, var(--nube-text) 4%) !important;
+}
+#header .unified-search-input:focus-within {
+	background: var(--nube-surface) !important;
+	box-shadow: var(--nube-elev-1) !important;
+}
+#header .unified-search-input__field {
+	height: 48px !important;
+	margin: 0 !important;
+	background: transparent !important;
+	border-radius: 28px !important;
+}
+#header .unified-search-input__input,
+body[data-themes] #header .unified-search-input__input {
+	height: 48px !important;
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 28px !important;
+	box-shadow: none !important;
+	padding-inline: 56px 16px !important;
+	color: var(--nube-text) !important;
+	font-size: 16px !important;
+}
+#header .unified-search-input__resting {
+	inset-inline-start: 16px !important;
+	left: 16px !important;
+	right: auto !important;
+	justify-content: flex-start !important;
+	height: 48px !important;
+	top: 0 !important;
+	align-items: center;
+	gap: 16px;
+}
+#header .unified-search-input__resting,
+#header .unified-search-input__resting * {
+	color: var(--nube-text-2) !important;
+	font-size: 16px !important;
+	font-weight: 400 !important;
+}
+#header .unified-search-input .magnify-icon svg {
+	width: 24px;
+	height: 24px;
+}
+#header .unified-search-input__shortcut,
+#header .unified-search-input kbd {
+	display: none !important;
+}
+/* Search fields that apps put in the header (Memories, Talk...) get the same pill look. */
+body[data-themes] #header .input-field .input-field__input {
+	height: 48px !important;
+	background: var(--nube-search) !important;
+	border: 0 !important;
+	border-radius: 28px !important;
+	box-shadow: none !important;
+	font-size: 16px !important;
+	padding-inline-start: 48px !important;
+	min-width: min(560px, 40vw);
+}
+body[data-themes] #header .input-field .input-field__input:focus {
+	background: var(--nube-surface) !important;
+	box-shadow: var(--nube-elev-1) !important;
+}
+#header .input-field .input-field__main-wrapper {
+	height: 48px !important;
+}
+#header .input-field .input-field__icon--leading {
+	inset-inline-start: 12px !important;
+	height: 48px !important;
+	color: var(--nube-text-2);
+}
+
+/* 4b. Header on small screens: let Nextcloud collapse the search into an icon. */
+@media (max-width: 1023px) {
+	#header .header-start {
+		min-width: 0;
+	}
+	#header .header-center {
+		margin-inline-start: 0;
+		flex: 0 1 auto !important;
+	}
+	#header .header-end {
+		flex: 0 0 auto !important;
+	}
+	#header .unified-search-menu,
+	#header .unified-search-input {
+		width: auto !important;
+	}
+}
+@media (max-width: 599px) {
+	#header #nextcloud::after {
+		display: none;
+	}
+	#header .header-start {
+		gap: 0;
+	}
+	#header .app-menu-entry__label {
+		display: none;
+	}
+}
+
+/* Avatar and right side icons. */
+#header .header-end {
+	gap: 4px;
+}
+#header .header-menu__trigger {
+	border-radius: 50% !important;
+}
+#header .header-menu__trigger:hover {
+	background: var(--nube-hover) !important;
+}
+
+/* 5. Layout: navigation on the page background, content on a white card --------------------------- */
+#content,
+#content-vue {
+	background: transparent !important;
+	backdrop-filter: none !important;
+	box-shadow: none !important;
+	margin: 0 !important;
+	border-radius: 0 !important;
+	height: calc(100% - 64px);
+	top: 64px !important;
+	padding-top: 0 !important;
+}
+#content-vue .app-content,
+#content .app-content {
+	background: var(--nube-surface) !important;
+	border-radius: 16px !important;
+	margin: 0 16px 16px 0;
+	box-shadow: none;
+}
+.app-navigation--close + .app-content,
+#content-vue:has(.app-navigation--close) .app-content {
+	margin-inline-start: 16px;
+}
+#app-sidebar-vue,
+.app-sidebar {
+	background: var(--nube-surface) !important;
+	border-radius: 16px !important;
+	margin: 0 16px 16px 0 !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+.app-sidebar-header__info,
+.app-sidebar-header__desc {
+	background: transparent !important;
+}
+
+/* 6. Navigation (left column) ---------------------------------------------------------------------- */
+.app-navigation {
+	background: transparent !important;
+	backdrop-filter: none !important;
+	border: 0 !important;
+	--navigation-width: 256px;
+	width: 256px !important;
+}
+.app-navigation__content,
+#app-navigation-vue {
+	background: transparent !important;
+	backdrop-filter: none !important;
+	border: 0 !important;
+}
+.app-navigation__body {
+	padding-inline: 8px 12px;
+}
+.app-navigation-entry-wrapper {
+	margin: 0 !important;
+}
+.app-navigation-entry {
+	min-height: 32px !important;
+	height: 32px;
+	border-radius: 16px !important;
+	padding: 0 !important;
+	background: transparent !important;
+	margin-block: 0 !important;
+}
+.app-navigation-entry::before,
+.app-navigation-entry::after {
+	display: none !important;
+}
+.app-navigation-entry .app-navigation-entry-link,
+.app-navigation-entry .app-navigation-entry-button {
+	min-height: 32px !important;
+	height: 32px;
+	padding-inline: 12px 16px !important;
+	border-radius: 16px !important;
+	color: var(--nube-text) !important;
+	font-size: 14px;
+	font-weight: 400;
+}
+.app-navigation-entry .app-navigation-entry-icon {
+	width: 32px;
+	min-width: 32px;
+	color: var(--nube-text-2);
+}
+.app-navigation-entry__name {
+	font-weight: inherit !important;
+}
+.app-navigation-entry:hover {
+	background: var(--nube-hover) !important;
+}
+.app-navigation-entry.active,
+.app-navigation-entry.active:hover,
+.app-navigation-entry--active,
+body[data-themes] .app-navigation .app-navigation-entry.active,
+body[data-themes] .app-navigation .app-navigation-entry.active:hover {
+	background: var(--nube-selected) !important;
+	background-color: var(--nube-selected) !important;
+}
+.app-navigation-entry.active .app-navigation-entry-link,
+.app-navigation-entry.active .app-navigation-entry-icon,
+.app-navigation-entry.active .app-navigation-entry__name {
+	color: var(--nube-on-selected) !important;
+	font-weight: 600 !important;
+}
+.app-navigation-entry .counter-bubble__counter,
+.app-navigation-entry .counter-bubble {
+	background: transparent;
+	color: var(--nube-text-2);
+}
+/* Folder tree and other sub-entries. */
+.app-navigation-entry__children .app-navigation-entry .app-navigation-entry-link {
+	padding-inline-start: 28px !important;
+}
+/* Bottom block: trash, quota, settings. */
+.app-navigation-entry__settings {
+	padding: 8px 12px 16px 8px !important;
+	background: transparent !important;
+	border: 0 !important;
+}
+.app-navigation-entry__settings-quota .progress-bar {
+	--progress-bar-height: 4px;
+	height: 4px;
+	border-radius: 2px;
+	margin-top: 4px;
+}
+.app-navigation-entry__settings-quota .app-navigation-entry-link {
+	height: auto !important;
+	min-height: 48px !important;
+	align-items: flex-start;
+}
+progress.progress-bar::-webkit-progress-bar {
+	background: var(--nube-outline-2);
+	border-radius: 2px;
+}
+progress.progress-bar::-webkit-progress-value {
+	background: var(--nube-primary);
+	border-radius: 2px;
+}
+progress.progress-bar::-moz-progress-bar {
+	background: var(--nube-primary);
+	border-radius: 2px;
+}
+/* The per-app search at the top of the navigation: cloud drives only search from the header. */
+.files-navigation .app-navigation__search {
+	display: none;
+}
+.app-navigation-toggle-wrapper .app-navigation-toggle {
+	border-radius: 50% !important;
+}
+/* On small screens the navigation is a drawer over the content: it needs its own background. */
+@media (max-width: 1023px) {
+	.app-navigation:not(.app-navigation--close) {
+		background: var(--nube-bg) !important;
+		box-shadow: var(--nube-elev-3) !important;
+		border-radius: 0 16px 16px 0 !important;
+		z-index: 1000;
+		width: min(300px, 85vw) !important;
+	}
+	.app-navigation:not(.app-navigation--close) .app-navigation__content,
+	.app-navigation:not(.app-navigation--close) #app-navigation-vue {
+		background: var(--nube-bg) !important;
+	}
+}
+
+/* 7. Files ------------------------------------------------------------------------------------------ */
+/* "New" button: big white rounded button at the top of the navigation, on wide screens. */
+.files-list__header-upload-button .button-vue--vue-primary,
+.files-list__header .upload-picker .button-vue--vue-primary {
+	background: var(--nube-surface) !important;
+	color: var(--nube-text) !important;
+	box-shadow: var(--nube-elev-1) !important;
+	border: 0 !important;
+	border-radius: 16px !important;
+	height: 56px !important;
+	min-height: 56px;
+	padding-inline: 16px 20px !important;
+	font-size: 14px;
+	font-weight: 500;
+}
+.files-list__header-upload-button .button-vue--vue-primary:hover,
+.files-list__header .upload-picker .button-vue--vue-primary:hover {
+	background: color-mix(in srgb, var(--nube-surface) 92%, var(--nube-primary) 8%) !important;
+	box-shadow: var(--nube-elev-2) !important;
+}
+.files-list__header-upload-button .button-vue--vue-primary .button-vue__icon,
+.files-list__header .upload-picker .button-vue--vue-primary .button-vue__icon {
+	color: var(--nube-text) !important;
+}
+body[data-themes] .files-list__header-upload-button .button-vue--vue-primary *,
+body[data-themes] .files-list__header .upload-picker .button-vue--vue-primary * {
+	color: var(--nube-text) !important;
+}
+@media (min-width: 1024px) {
+	/* Move "New" to the navigation column. The navigation list starts lower to make room. */
+	#content-vue:has(.files-navigation:not(.app-navigation--close)) .files-list__header .upload-picker {
+		position: fixed;
+		top: 72px;
+		left: 16px;
+		z-index: 20;
+	}
+	#content-vue:has(.files-navigation:not(.app-navigation--close)) .files-navigation .app-navigation__body {
+		margin-top: 80px;
+	}
+}
+
+@media (max-width: 1023px) {
+	/* On phones and tablets "New" is a floating button at the bottom right, as in the mobile apps. */
+	.files-list__header .upload-picker {
+		position: fixed;
+		inset-inline-end: 16px;
+		bottom: 16px;
+		z-index: 30;
+	}
+	.files-list__header-upload-button .button-vue--vue-primary,
+	.files-list__header .upload-picker .button-vue--vue-primary {
+		width: 56px !important;
+		min-width: 56px !important;
+		padding: 0 !important;
+		justify-content: center;
+		box-shadow: var(--nube-elev-3) !important;
+		background: var(--nube-selected) !important;
+	}
+	body[data-themes] .files-list__header .upload-picker .button-vue--vue-primary * {
+		color: var(--nube-on-selected) !important;
+	}
+	.files-list__header .upload-picker .button-vue--vue-primary .button-vue__text {
+		display: none;
+	}
+	.files-list__header .upload-picker .button-vue--vue-primary .button-vue__wrapper {
+		justify-content: center;
+	}
+	.files-list__breadcrumbs .vue-crumb:last-child .button-vue__text,
+	.files-list__breadcrumbs .vue-crumb .button-vue__text {
+		font-size: 18px !important;
+	}
+	#content-vue .app-content,
+	#content .app-content {
+		margin: 0 !important;
+		border-radius: 16px 16px 0 0 !important;
+	}
+}
+
+/* Title and filters above the list. */
+.files-list__header {
+	min-height: 64px;
+	padding-inline: 16px 16px !important;
+	align-items: center;
+}
+.files-list__breadcrumbs .vue-crumb:last-child .button-vue__text,
+.files-list__breadcrumbs .vue-crumb:last-child > a,
+.files-list__breadcrumbs .vue-crumb:last-child .action-item .button-vue__text {
+	font-size: 22px;
+	font-weight: 400;
+	color: var(--nube-text);
+}
+.files-list__breadcrumbs .vue-crumb:last-child .button-vue,
+.files-list__breadcrumbs .vue-crumb .button-vue {
+	border-radius: 20px !important;
+	height: 40px;
+}
+.files-list__breadcrumbs .vue-crumb:not(:last-child) .button-vue__text {
+	font-size: 22px;
+	font-weight: 400;
+	color: var(--nube-text-2);
+}
+/* Title on the left, filter chips right after it, view switch at the end: one row, so the
+   fixed header height Nextcloud uses for the sticky table head stays valid. */
+.files-list__header {
+	padding-block: 8px !important;
+	gap: 8px;
+}
+.files-list__header .files-list__breadcrumbs {
+	order: 1;
+	flex: 0 1 auto !important;
+	min-width: 0;
+}
+.files-list__header > .files-list__header-grid-button,
+.files-list__header > .button-vue {
+	order: 3;
+	margin-inline-start: auto;
+}
+.files-list__header > div:has(> .v-popper) {
+	order: 2;
+	flex: 1 1 auto;
+	justify-content: flex-start !important;
+	margin: 0 !important;
+	padding-inline-start: 8px !important;
+	overflow: visible !important;
+	align-items: center;
+}
+.files-list__header > div:has(> form.upload-picker),
+.files-list__header > div:has(> .upload-picker) {
+	display: contents;
+}
+/* Filter buttons (Tipo, Modificado, Personas...) as outlined chips. Breadcrumbs excluded. */
+.files-list__header .v-popper > .button-vue--vue-tertiary.button-vue--icon-and-text:not(.files-list__breadcrumbs *),
+.files-list__filters .button-vue--vue-tertiary {
+	height: 32px !important;
+	min-height: 32px !important;
+	border: 1px solid var(--nube-outline) !important;
+	border-radius: 8px !important;
+	padding-inline: 8px 12px !important;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--nube-text-2) !important;
+	background: transparent !important;
+	margin-inline-end: 4px;
+}
+.files-list__breadcrumbs .button-vue {
+	border: 0 !important;
+}
+.files-list__header .v-popper > .button-vue--vue-tertiary.button-vue--icon-and-text:not(.files-list__breadcrumbs *):hover {
+	background: var(--nube-hover) !important;
+}
+.files-list__header .v-popper > .button-vue--vue-tertiary.button-vue--icon-and-text .button-vue__icon {
+	width: 24px;
+	min-width: 24px;
+}
+.files-list__header .v-popper > .button-vue--vue-tertiary.button-vue--icon-and-text .button-vue__icon .material-design-icon svg {
+	width: 18px;
+	height: 18px;
+}
+/* Active filter chip. */
+.files-list__filters .button-vue--vue-secondary,
+.files-list__header .v-popper > .button-vue--vue-secondary.button-vue--icon-and-text {
+	background: var(--nube-selected) !important;
+	color: var(--nube-on-selected) !important;
+	border: 1px solid transparent !important;
+	border-radius: 8px !important;
+	height: 32px !important;
+	min-height: 32px !important;
+}
+
+/* The list. */
+.files-list {
+	--row-height: 48px !important;
+	--cell-margin: 12px;
+	--clickable-area: 40px;
+}
+.files-list__table {
+	border-collapse: collapse;
+}
+.files-list__thead,
+.files-list__row-head {
+	background: var(--nube-surface) !important;
+}
+.files-list__row-head th,
+.files-list__row-head .files-list__column-sort-button {
+	color: var(--nube-text) !important;
+	font-size: 14px;
+	font-weight: 500 !important;
+}
+.files-list__row-head {
+	border-bottom: 1px solid var(--nube-outline-2) !important;
+}
+.files-list__row {
+	border-bottom: 1px solid var(--nube-divider) !important;
+	border-radius: 0 !important;
+}
+.files-list__row td {
+	color: var(--nube-text-2);
+	font-size: 14px;
+}
+.files-list__row .files-list__row-name-text,
+.files-list__row .files-list__row-name-link,
+.files-list__row .files-list__row-name {
+	color: var(--nube-text) !important;
+	font-weight: 500;
+}
+.files-list__row .files-list__row-name-ext {
+	color: var(--nube-text-2) !important;
+	font-weight: 500;
+}
+.files-list__row:hover,
+.files-list__row:focus-within,
+.files-list__row--hover {
+	background-color: var(--nube-hover) !important;
+	border-radius: 0 !important;
+}
+.files-list__row--active,
+.files-list__row--active:hover,
+.files-list__row[data-cy-files-list-row-selected="true"] {
+	background-color: var(--nube-selected) !important;
+}
+.files-list__row--active td,
+.files-list__row--active .files-list__row-name-link {
+	color: var(--nube-on-selected) !important;
+}
+/* Gray folders, as in cloud drives. */
+.files-list__row-icon .folder-icon,
+.files-list__row-icon .folder-open-icon,
+.files-list__row-icon > .material-design-icon.folder-icon,
+.files-list__row-icon .folder-multiple-icon {
+	color: var(--nube-folder) !important;
+}
+.files-list__row-icon-overlay {
+	color: var(--nube-surface) !important;
+}
+/* Checkboxes only when hovering, selecting or using the keyboard. */
+@media (hover: hover) {
+	.files-list__row .files-list__row-checkbox .checkbox-radio-switch:not(.checkbox-radio-switch--checked) {
+		opacity: 0;
+		transition: opacity 0.1s;
+	}
+	.files-list__row-head .files-list__row-checkbox .checkbox-radio-switch:not(.checkbox-radio-switch--checked):not(.checkbox-radio-switch--indeterminate) {
+		opacity: 0;
+	}
+	.files-list__table:hover .files-list__row-head .files-list__row-checkbox .checkbox-radio-switch,
+	.files-list__row:hover .files-list__row-checkbox .checkbox-radio-switch,
+	.files-list__row:focus-within .files-list__row-checkbox .checkbox-radio-switch,
+	.files-list:has(.checkbox-radio-switch--checked) .files-list__row-checkbox .checkbox-radio-switch {
+		opacity: 1;
+	}
+}
+/* Inline share icon only on hover. */
+@media (hover: hover) {
+	.files-list__row .files-list__row-action-sharing-status:not(.files-list__row-action-sharing-status--shared) {
+		opacity: 0;
+	}
+	.files-list__row:hover .files-list__row-action-sharing-status {
+		opacity: 1;
+	}
+}
+.files-list__row-footer td,
+.files-list__tfoot td {
+	color: var(--nube-text-2) !important;
+	border: 0 !important;
+}
+/* Grid view: rounded cards on a soft background. */
+.files-list--grid .files-list__row {
+	border: 0 !important;
+	border-radius: 12px !important;
+	background: var(--nube-surface-2) !important;
+	margin: 4px;
+}
+.files-list--grid .files-list__row:hover {
+	background: color-mix(in srgb, var(--nube-surface-2) 90%, var(--nube-text) 10%) !important;
+}
+.files-list--grid .files-list__row--active {
+	background: var(--nube-selected) !important;
+}
+.files-list--grid .files-list__row-icon img,
+.files-list--grid .files-list__row-icon-preview {
+	border-radius: 8px !important;
+}
+/* Empty folder. */
+.files-list .empty-content__icon {
+	color: var(--nube-outline-2);
+}
+/* Drag and drop and selection bar. */
+.files-list__drag-drop-notice {
+	background: color-mix(in srgb, var(--nube-primary-container) 60%, transparent) !important;
+	border: 2px solid var(--nube-primary) !important;
+	border-radius: 16px;
+}
+
+/* 8. Controls --------------------------------------------------------------------------------------- */
+.button-vue {
+	border-radius: 20px !important;
+	font-weight: 500;
+	letter-spacing: 0.1px;
+}
+.button-vue--icon-only {
+	border-radius: 50% !important;
+}
+.button-vue--vue-primary {
+	background-color: var(--nube-primary) !important;
+	color: var(--nube-on-primary) !important;
+	box-shadow: none !important;
+}
+.button-vue--vue-primary:hover:not(:disabled) {
+	background-color: var(--nube-primary-hover) !important;
+	box-shadow: var(--nube-elev-1) !important;
+}
+.button-vue--vue-secondary {
+	background-color: var(--nube-primary-container) !important;
+	color: var(--nube-on-primary-container) !important;
+}
+.button-vue--vue-secondary:hover:not(:disabled) {
+	background-color: color-mix(in srgb, var(--nube-primary-container) 88%, var(--nube-on-primary-container) 12%) !important;
+}
+.button-vue--vue-tertiary:hover:not(:disabled),
+.button-vue--vue-tertiary-no-background:hover:not(:disabled) {
+	background-color: var(--nube-hover) !important;
+}
+.button-vue--vue-error {
+	background-color: #b3261e !important;
+	color: #fff !important;
+}
+/* Text fields: outlined, 4px corners, blue focus ring. */
+.input-field__input,
+.input-field input,
+.textarea__input,
+select,
+input[type="text"]:not(.input-field__input),
+input[type="password"]:not(.input-field__input),
+input[type="email"]:not(.input-field__input),
+input[type="search"]:not(.input-field__input),
+input[type="number"],
+input[type="url"],
+input[type="tel"],
+input[type="date"],
+textarea {
+	border-radius: 4px !important;
+	border: 1px solid var(--nube-outline) !important;
+	background: var(--nube-surface) !important;
+	color: var(--nube-text) !important;
+	box-shadow: none !important;
+}
+.input-field__input:hover:not(:focus),
+textarea:hover:not(:focus) {
+	border-color: var(--nube-text) !important;
+}
+body[data-themes] .input-field .input-field__input:focus,
+body[data-themes] .input-field .input-field__input:focus-visible,
+body[data-themes] .input-field .input-field__input:focus-within:not([disabled]),
+body[data-themes] .input-field .input-field__input:active:not([disabled]),
+body[data-themes] textarea:focus,
+body[data-themes] select:focus,
+body[data-themes] input:not(.unified-search-input__input):focus-visible {
+	outline: none !important;
+	border-color: var(--nube-primary) !important;
+	box-shadow: inset 0 0 0 1px var(--nube-primary) !important;
+}
+.input-field__label {
+	color: var(--nube-text-2) !important;
+}
+.input-field__input:focus + .input-field__label,
+.input-field__input:focus ~ .input-field__label {
+	color: var(--nube-primary) !important;
+}
+/* Checkboxes, radios and switches in the accent color. */
+.checkbox-radio-switch__icon,
+.checkbox-content__icon {
+	color: var(--nube-outline);
+}
+.checkbox-radio-switch--checked .checkbox-radio-switch__icon,
+.checkbox-radio-switch--checked .checkbox-content__icon {
+	color: var(--nube-primary) !important;
+}
+/* Chips and tags. */
+.nc-chip,
+.vs__selected,
+.systemtags-tag {
+	border-radius: 8px !important;
+}
+/* Avatars stay round. */
+.avatardiv,
+.avatardiv img {
+	border-radius: 50% !important;
+}
+
+/* 9. Popovers, menus, dialogs, toasts -------------------------------------------------------------- */
+.v-popper--theme-dropdown .v-popper__inner,
+.v-popper__popper .v-popper__inner {
+	background: var(--nube-surface) !important;
+	border: 0 !important;
+	border-radius: 8px !important;
+	box-shadow: var(--nube-elev-2) !important;
+	padding-block: 8px;
+}
+body[data-themes*="dark"] .v-popper__popper .v-popper__inner {
+	background: #2b2b2b !important;
+}
+@media (prefers-color-scheme: dark) {
+	body[data-themes*="default"] .v-popper__popper .v-popper__inner {
+		background: #2b2b2b !important;
+	}
+}
+.v-popper__arrow-container {
+	display: none !important;
+}
+.action-button,
+.action-link,
+.action-router,
+.action-checkbox,
+.action-radio,
+.action-text {
+	border-radius: 0 !important;
+	min-height: 40px;
+}
+.action-button:hover,
+.action-link:hover,
+.action-router:hover,
+.action:hover > .action-button,
+.action:hover > .action-link {
+	background: var(--nube-hover) !important;
+}
+.action-button__text,
+.action-link__text,
+.action-router__text {
+	font-size: 14px;
+	color: var(--nube-text);
+}
+.action-button__icon,
+.action-link__icon {
+	color: var(--nube-text-2);
+}
+.action-separator {
+	border-color: var(--nube-divider) !important;
+	margin-block: 8px !important;
+}
+/* Header menus (account, notifications, contacts). */
+.header-menu__wrapper,
+.header-menu__content {
+	background: var(--nube-surface-2) !important;
+	border-radius: 28px !important;
+	box-shadow: var(--nube-elev-2) !important;
+	border: 0 !important;
+}
+.header-menu__carret {
+	display: none !important;
+}
+/* Dialogs: 28px corners like Material 3. */
+.modal-container,
+.dialog__modal .modal-container,
+.oc-dialog,
+.nc-dialog {
+	border-radius: 28px !important;
+	background: var(--nube-surface-2) !important;
+	box-shadow: var(--nube-elev-3) !important;
+}
+.modal-container .dialog__name,
+.dialog__name,
+.oc-dialog-title {
+	font-size: 24px !important;
+	font-weight: 400 !important;
+	color: var(--nube-text);
+}
+.modal-mask {
+	background-color: rgba(0, 0, 0, 0.4) !important;
+	backdrop-filter: none !important;
+}
+.modal-wrapper--fullscreen .modal-container {
+	border-radius: 0 !important;
+}
+/* Toasts as dark snackbars, bottom left. */
+.toastify.toastify,
+.toastify.dialogs {
+	background: var(--nube-snackbar) !important;
+	color: var(--nube-on-snackbar) !important;
+	border: 0 !important;
+	border-radius: 4px !important;
+	box-shadow: var(--nube-elev-3) !important;
+	font-size: 14px;
+	min-height: 48px;
+}
+.toastify.toastify::before {
+	filter: invert(1);
+}
+.toastify .toast-close,
+.toastify .toast-undo-button {
+	color: var(--nube-on-snackbar) !important;
+}
+/* Tooltips. */
+.v-popper--theme-tooltip .v-popper__inner {
+	background: #3c4043 !important;
+	color: #fff !important;
+	border-radius: 4px !important;
+	font-size: 12px;
+	padding: 4px 8px;
+}
+
+/* 10. Settings and other apps ---------------------------------------------------------------------- */
+/* Settings sections as cards on the content surface. */
+#app-content .section,
+.app-settings-section,
+.settings-section {
+	border-bottom: 1px solid var(--nube-divider) !important;
+	padding-block: 24px !important;
+}
+.settings-section__name,
+#app-content .section h2,
+#app-content .section > h2 {
+	font-size: 22px !important;
+	font-weight: 400 !important;
+	color: var(--nube-text);
+}
+.settings-section__desc,
+#app-content .section .settings-hint {
+	color: var(--nube-text-2) !important;
+}
+/* Settings navigation uses the same pills. */
+#app-navigation .app-navigation-entry a,
+.app-settings__navigation .navigation-list__link {
+	border-radius: 16px !important;
+}
+.app-settings__navigation .navigation-list__link--active {
+	background: var(--nube-selected) !important;
+	color: var(--nube-on-selected) !important;
+}
+/* App store, app cards and empty states. */
+.empty-content__name {
+	font-size: 22px !important;
+	font-weight: 400 !important;
+}
+.app-card,
+.apps-list .section {
+	border-radius: 16px !important;
+}
+/* Photos and Memories: square corners off on thumbnails, rounded selection. */
+.photo-container,
+.memories .p-outer,
+.timeline .photo {
+	border-radius: 8px;
+	overflow: hidden;
+}
+/* Profile page and dashboard widgets. */
+.panel,
+.dashboard .panel,
+#profile__header {
+	border-radius: 16px !important;
+	background: var(--nube-surface) !important;
+	backdrop-filter: none !important;
+}
+/* Public share pages (no navigation): one centered card. */
+#body-public #content,
+#body-public #content-vue {
+	top: 64px !important;
+}
+#body-public .app-content {
+	margin: 0 16px 16px 16px !important;
+}
+
+/* 11. Login and other guest pages ------------------------------------------------------------------ */
+body#body-login,
+body.guest,
+body[data-themes]#body-login {
+	background: var(--nube-surface-2) !important;
+	background-image: none !important;
+}
+#body-login #header.header-guest,
+.guest-content ~ header,
+body#body-login > .wrapper > .v-align > header {
+	display: none;
+}
+#body-login .wrapper,
+#body-login .v-align {
+	width: 100%;
+	max-width: 1040px;
+	margin-inline: auto;
+	padding-inline: 20px;
+}
+#body-login .wrapper {
+	margin: 0 auto !important;
+	padding-block: 0 !important;
+	min-height: calc(100vh - 48px);
+	display: flex;
+	align-items: center;
+}
+#body-login .v-align {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding-block: 24px;
+}
+#body-login .guest-content,
+#body-login .guest-content > div {
+	width: 100%;
+}
+/* The card. */
+#body-login .guest-box,
+.guest-box.login-box {
+	width: 100% !important;
+	max-width: 1040px !important;
+	background: var(--nube-surface) !important;
+	color: var(--nube-text) !important;
+	border-radius: 28px !important;
+	padding: 36px !important;
+	box-shadow: none !important;
+	backdrop-filter: none !important;
+	margin: 0 auto !important;
+	text-align: start;
+}
+/* Logo at the top left of the card (uses the instance logo). */
+#body-login .login-form__headline::before,
+#body-login .guest-box > h2:first-child::before {
+	content: "";
+	display: block;
+	width: 48px;
+	height: 48px;
+	margin-bottom: 24px;
+	background: var(--image-logo, none) no-repeat left center / contain;
+}
+#body-login .login-form__headline,
+#body-login .guest-box h2 {
+	font-size: 36px !important;
+	line-height: 44px;
+	font-weight: 400 !important;
+	color: var(--nube-text) !important;
+	text-align: start !important;
+	margin: 0 0 16px !important;
+}
+/* Two columns on wide screens: title on the left, fields and buttons on the right. */
+@media (min-width: 840px) {
+	#body-login .login-box__wrapper {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		column-gap: 48px;
+		align-items: start;
+	}
+	#body-login .login-box__wrapper > form.login-form,
+	#body-login .login-box__wrapper > form.login-form > fieldset {
+		display: contents;
+	}
+	#body-login .login-box__wrapper > * {
+		grid-column: 2;
+	}
+	#body-login .login-form__headline {
+		grid-column: 1 !important;
+		grid-row: 1 / span 8;
+	}
+	#body-login .login-box {
+		padding-top: 36px !important;
+		min-height: 380px;
+	}
+	#body-login .login-box__wrapper .input-field:first-of-type {
+		margin-top: 72px;
+	}
+}
+#body-login .login-box__wrapper {
+	width: 100% !important;
+	max-width: none !important;
+}
+#body-login .input-field {
+	margin-block: 0 16px !important;
+}
+#body-login .input-field__main-wrapper,
+#body-login .input-field__input {
+	height: 56px !important;
+	min-height: 56px;
+}
+#body-login .input-field__input {
+	font-size: 16px !important;
+	padding-inline: 16px !important;
+	border-radius: 4px !important;
+	border: 1px solid var(--nube-outline) !important;
+	background: transparent !important;
+}
+#body-login .input-field__label {
+	font-size: 16px;
+	inset-inline-start: 0px !important;
+	background: var(--nube-surface);
+	padding-inline: 4px;
+}
+#body-login .input-field__trailing-button {
+	top: 10px !important;
+	inset-block-start: 10px !important;
+	inset-inline-end: 8px !important;
+}
+/* Label centered in the 56px field while empty; NC moves it onto the border when focused or filled. */
+#body-login .input-field__input:placeholder-shown:not(:focus) + .input-field__label {
+	inset-block-start: 17.5px !important;
+}
+/* Submit: pill button aligned to the right, without the arrow. */
+#body-login .login-form .button-vue--vue-primary,
+#body-login .guest-box .button-vue--vue-primary {
+	width: auto !important;
+	min-width: 96px;
+	height: 40px !important;
+	padding-inline: 24px !important;
+	border-radius: 20px !important;
+	margin-inline-start: auto;
+	justify-self: end;
+	margin-top: 8px;
+}
+#body-login .login-form .button-vue--vue-primary .submit-wrapper__icon,
+#body-login .login-form .button-vue--vue-primary .button-vue__icon {
+	display: none;
+}
+/* Secondary actions as blue text links. */
+#body-login .login-box__wrapper > .button-vue--vue-tertiary,
+#body-login .guest-box .button-vue--vue-tertiary {
+	width: auto !important;
+	justify-self: start;
+	height: 36px !important;
+	padding-inline: 12px !important;
+	margin-inline-start: -12px;
+	color: var(--nube-primary) !important;
+	background: transparent !important;
+	font-weight: 500;
+}
+#body-login .login-box__wrapper > .button-vue--vue-tertiary .button-vue__text,
+#body-login .guest-box .button-vue--vue-tertiary .button-vue__text {
+	color: var(--nube-primary) !important;
+	font-weight: 500;
+}
+#body-login .login-box__wrapper > .button-vue--vue-tertiary:hover {
+	background: color-mix(in srgb, var(--nube-primary) 8%, transparent) !important;
+}
+#body-login .checkbox-radio-switch {
+	margin-inline-start: -8px;
+}
+/* Error and info messages. */
+#body-login .notecard,
+#body-login .warning,
+#body-login #message:not(.hidden) {
+	border-radius: 12px !important;
+}
+/* Footer below the card, small and on the left, like the sign-in pages of cloud drives. */
+#body-login footer.guest-box,
+body#body-login > footer {
+	background: transparent !important;
+	box-shadow: none !important;
+	backdrop-filter: none !important;
+	color: var(--nube-text-2) !important;
+	max-width: 1040px !important;
+	width: calc(100% - 40px) !important;
+	margin: -48px auto 24px !important;
+	padding: 0 24px !important;
+	text-align: start !important;
+	border-radius: 0 !important;
+}
+#body-login footer .info,
+#body-login footer a {
+	color: var(--nube-text-2) !important;
+	font-size: 12px;
+}
+/* Two-factor, password reset and other guest boxes: same card, one column. */
+#body-login .guest-box .two-factor-provider,
+#body-login .guest-box .challenge,
+#body-login .guest-box form:not(.login-form) {
+	text-align: start;
+}
+#body-login .guest-box input[type="tel"],
+#body-login .guest-box input[name="challenge"] {
+	height: 56px !important;
+	font-size: 20px !important;
+	letter-spacing: 4px;
+	text-align: center;
+	max-width: 320px;
+}
+
+/* 12. Login on phones: no card, the whole screen is the surface (as sign-in pages do on mobile). */
+#body-login .guest-box {
+	box-sizing: border-box;
+}
+@media (max-width: 599px) {
+	body#body-login,
+	body[data-themes]#body-login {
+		background: var(--nube-surface) !important;
+	}
+	#body-login .wrapper,
+	#body-login .v-align {
+		padding-inline: 0 !important;
+		align-items: flex-start;
+	}
+	#body-login .guest-box,
+	.guest-box.login-box {
+		border-radius: 0 !important;
+		padding: 24px !important;
+		max-width: 100% !important;
+	}
+	#body-login .login-box__wrapper > .button-vue--vue-tertiary,
+	#body-login .guest-box .button-vue--vue-tertiary {
+		align-self: flex-start;
+		justify-content: flex-start;
+	}
+	#body-login .login-form__headline,
+	#body-login .guest-box h2 {
+		font-size: 28px !important;
+		line-height: 36px;
+	}
+	#body-login footer.guest-box,
+	body#body-login > footer {
+		margin: 0 auto 16px !important;
+	}
+}
