@@ -586,10 +586,17 @@ body[data-themes] .files-list__header .upload-picker .button-vue--vue-primary * 
 
 @media (max-width: 1023px) {
 	/* On phones and tablets "New" is a floating button at the bottom right, as in the mobile apps. */
-	.files-list__header .upload-picker {
-		position: fixed;
-		inset-inline-end: 16px;
-		bottom: 16px;
+	body[data-themes] .files-list__header .upload-picker,
+	body[data-themes] .files-list__header-upload-button--narrow {
+		position: fixed !important;
+		inset-inline-end: auto !important;
+		right: 16px !important;
+		bottom: 24px !important;
+		top: auto !important;
+		width: 56px !important;
+		height: 56px !important;
+		display: flex;
+		align-items: center;
 		z-index: 30;
 	}
 	.files-list__header-upload-button .button-vue--vue-primary,
@@ -601,10 +608,12 @@ body[data-themes] .files-list__header .upload-picker .button-vue--vue-primary * 
 		box-shadow: var(--nube-elev-3) !important;
 		background: var(--nube-selected) !important;
 	}
-	body[data-themes] .files-list__header .upload-picker .button-vue--vue-primary * {
+	body[data-themes] .files-list__header .upload-picker .button-vue--vue-primary *,
+	body[data-themes] .files-list__header-upload-button--narrow .button-vue--vue-primary * {
 		color: var(--nube-on-selected) !important;
 	}
-	.files-list__header .upload-picker .button-vue--vue-primary .button-vue__text {
+	.files-list__header .upload-picker .button-vue--vue-primary .button-vue__text,
+	.files-list__header-upload-button--narrow .button-vue__text {
 		display: none;
 	}
 	.files-list__header .upload-picker .button-vue--vue-primary .button-vue__wrapper {
