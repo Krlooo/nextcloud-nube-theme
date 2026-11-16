@@ -9,13 +9,17 @@
 	<licence>agpl</licence>
 	<author>Krlooo</author>
 	<namespace>NubeTheme</namespace>
+	<types>
+		<logging/>
+	</types>
 	<category>customization</category>
 	<website>https://github.com/Krlooo/nextcloud-nube-theme</website>
 	<bugs>https://github.com/Krlooo/nextcloud-nube-theme/issues</bugs>
 	<repository>https://github.com/Krlooo/nextcloud-nube-theme</repository>
-	<types>
-		<logging/>
-	</types>
+	<screenshot>https://raw.githubusercontent.com/Krlooo/nextcloud-nube-theme/main/screenshots/files-light.png</screenshot>
+	<screenshot>https://raw.githubusercontent.com/Krlooo/nextcloud-nube-theme/main/screenshots/login.png</screenshot>
+	<screenshot>https://raw.githubusercontent.com/Krlooo/nextcloud-nube-theme/main/screenshots/files-dark.png</screenshot>
+	<screenshot>https://raw.githubusercontent.com/Krlooo/nextcloud-nube-theme/main/screenshots/mobile.png</screenshot>
 	<dependencies>
 		<!-- Tested on 35 only. On a new major version Nextcloud disables the app and the default look returns. -->
 		<nextcloud min-version="35" max-version="35"/>
