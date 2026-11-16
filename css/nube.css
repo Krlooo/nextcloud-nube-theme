@@ -469,6 +469,18 @@ body[data-themes] #header .input-field .input-field__input:focus {
 .app-navigation-entry:hover {
 	background: var(--nube-hover) !important;
 }
+/* Nextcloud draws a 2px focus ring around the link, and it stays on the active entry after
+   navigation. Use the hover tint for keyboard focus instead, and nothing on the active pill. */
+body[data-themes] .app-navigation-entry .app-navigation-entry-link:focus-visible,
+body[data-themes] .app-navigation-entry .app-navigation-entry-button:focus-visible {
+	outline: none !important;
+	box-shadow: none !important;
+	background: var(--nube-hover) !important;
+}
+body[data-themes] .app-navigation-entry.active .app-navigation-entry-link:focus-visible,
+body[data-themes] .app-navigation-entry.active .app-navigation-entry-button:focus-visible {
+	background: transparent !important;
+}
 .app-navigation-entry.active,
 .app-navigation-entry.active:hover,
 .app-navigation-entry--active,
