@@ -1,1 +1,4 @@
 *.tgz
+# Local deploy helpers for one server
+push_theme.py
+deploy.sh
